@@ -5,6 +5,18 @@ const dot = (a, b) => a.reduce((s, v, i) => s + v * b[i], 0);
 const norm = (a) => Math.sqrt(dot(a, a));
 const cosine = (a, b) => dot(a, b) / (norm(a) * norm(b) + 1e-12);
 
+const normalizeVector = (v) => {
+  let s = 0;
+  for (let i = 0; i < v.length; i++) {
+    s += v[i] * v[i];
+  }
+  const n = Math.sqrt(s)
+  for (let i = 0; i < v.length; i++) {
+    v[i] /= n;
+  }
+  return v;
+};
+
 const retrieveTopK = (qvec, entries, k = 8) => {
   const scored = entries.map(e => ({
     ...e,
@@ -22,10 +34,14 @@ export class Embed {
   }
   constructor(entries) {
     if (!entries) throw new Error("no entries, use Embed.create()");
+    entries.forEach(i => normalizeVector(i.vec));
     this.entries = entries;
   }
   async getSimilar(s, topk = 6) {
     const qvec = await getEmbed(s);
+    console.log(qvec, "->");
+    normalizeVector(qvec);
+    console.log(qvec);
     const top = retrieveTopK(qvec, this.entries, topk);
     top.forEach(i => delete i.vec);
     return top;
