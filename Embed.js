@@ -2,8 +2,6 @@ import { getEmbed } from "./getEmbed.js";
 import { CSV } from "https://js.sabae.cc/CSV.js";
 
 const dot = (a, b) => a.reduce((s, v, i) => s + v * b[i], 0);
-const norm = (a) => Math.sqrt(dot(a, a));
-const cosine = (a, b) => dot(a, b) / (norm(a) * norm(b) + 1e-12);
 
 const normalizeVector = (v) => {
   let s = 0;
@@ -20,7 +18,7 @@ const normalizeVector = (v) => {
 const retrieveTopK = (qvec, entries, k = 8) => {
   const scored = entries.map(e => ({
     ...e,
-    score: cosine(qvec, e.vec),
+    score: dot(qvec, e.vec),
   }));
   scored.sort((x, y) => y.score - x.score);
   return scored.slice(0, k);
