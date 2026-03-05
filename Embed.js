@@ -37,9 +37,7 @@ export class Embed {
   }
   async getSimilar(s, topk = 6) {
     const qvec = await getEmbed(s);
-    console.log(qvec, "->");
     normalizeVector(qvec);
-    console.log(qvec);
     const top = retrieveTopK(qvec, this.entries, topk);
     top.forEach(i => delete i.vec);
     return top;
