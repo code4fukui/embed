@@ -23,3 +23,7 @@ deno --allow-read --allow-net --allow-import --allow-write addembed.js data.txt
 ```sh
 deno --allow-read --allow-net --allow-import getsimilar.js Wirthとは？
 ```
+
+## Library
+
+- [dotscores-simd](https;//github.com/code4fukui/dotscores-simd)
