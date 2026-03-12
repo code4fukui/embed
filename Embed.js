@@ -15,6 +15,7 @@ const decode = (vec) => {
 export class Embed {
   static async create(fncsv) {
     const entries = await CSV.fetchJSON(fncsv);
+    if (!entries.length) throw new Error("no entries");
     const vec = entries.map(i => decode(i.vec));
     const dots = await DotScores.create(vec);
     return new Embed(dots, entries);
@@ -27,9 +28,11 @@ export class Embed {
     const qvec = await getEmbed(s);
     normalizeVector(qvec);
     const res = this.dots.search(qvec, topk);
-    for (let i = 0; i < res.length; i++) {
-      res[i].text = this.entries[res[i].idx].text;
-      delete res[i].idx;
+    if (this.entries[0].text) {
+      for (let i = 0; i < res.length; i++) {
+        res[i].text = this.entries[res[i].idx].text;
+        delete res[i].idx;
+      }
     }
     return res;
   }
